@@ -99,6 +99,7 @@ app.post('/login', async (req, res) => {
 });
 
 
+
 app.post('/quizzes', async (req, res) => {
   try {
     const { questions  } = req.body;
@@ -106,7 +107,7 @@ app.post('/quizzes', async (req, res) => {
     if (!questions || !questions.length) {
       return res.status(400).json({ message: 'No questions provided' });
     }
-    let query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans) VALUES  returning new_id';
+    let query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans) VALUES  ';
     
     for (let i = 0; i < questions.length; i++) {
       query += `('${questions[i].question}', '${questions[i].opt1}', '${questions[i].opt2}', '${questions[i].opt3}', '${questions[i].opt4}', '${questions[i].ans}')`;
@@ -117,9 +118,7 @@ app.post('/quizzes', async (req, res) => {
 
 
     const newQuiz = await pool.query(query);
-    let key = newQuiz.rows[0].new_id;
-
-    res(key);
+   
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: 'Server error' });
@@ -129,11 +128,9 @@ app.post('/quizzes', async (req, res) => {
 
 
 
-app.get('/code' , async (req,res) => {
 
-const query = await pool.query('SELECT new_id FROM login WHERE ', [email]);
-}
-)
+
+
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
