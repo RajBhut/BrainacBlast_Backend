@@ -107,7 +107,7 @@ app.post('/quizzes', async (req, res) => {
     if (!questions || !questions.length) {
       return res.status(400).json({ message: 'No questions provided' });
     }
-    let query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans) VALUES  ';
+    let query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans , owner_id , generation_code ) VALUES  ';
     
     for (let i = 0; i < questions.length; i++) {
       query += `('${questions[i].question}', '${questions[i].opt1}', '${questions[i].opt2}', '${questions[i].opt3}', '${questions[i].opt4}', '${questions[i].ans}' , '${questions[i].owner_id}' , '${questions[i].generation_code}')`;
