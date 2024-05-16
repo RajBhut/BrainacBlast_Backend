@@ -85,7 +85,7 @@ app.post('/login', async (req, res) => {
 
     const validPassword = user.rows[0].password === password;
 
-    const boo = await pool.query('SELECT * FROM login WHERE password = $1', [password]);
+   
     if (!validPassword) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
