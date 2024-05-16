@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt');
 const port = 3000;
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: "*",
   credentials: true
 }));
 app.use(express.json());
@@ -27,7 +27,7 @@ app.get('/api/:id', async (req, res) => {
   console.log(req.params.id)
   try {
     const { id } = req.params;
-    const query = 'SELECT * FROM questions WHERE userid = $1';
+    const query = 'SELECT * FROM questions WHERE 	generation_code = $1';
     if (query.lengthq == 0) return res.status(404).json({ message: 'Not found' });
     const data = await pool.query(query, [id]);
     console.log(data.rows);
