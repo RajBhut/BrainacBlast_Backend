@@ -118,6 +118,7 @@ app.post('/quizzes', async (req, res) => {
 
 
     const newQuiz = await pool.query(query);
+    res.status(201).json({ newQuiz});
    
   } catch (error) {
     console.error(error.message);
