@@ -83,9 +83,9 @@ app.post('/login', async (req, res) => {
 
     // Compare password with hashed password
 
-    const validPassword = user.rows[0].password == password;
+    const validPassword = await pool.query('SELECT * FROM login WHERE email = $1 AND password = $2', [email, password]);
 
-   
+   validPassword = validPassword.rows[0].password === password;
     if (!validPassword) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
