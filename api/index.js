@@ -83,7 +83,7 @@ app.post('/login', async (req, res) => {
 
     // Compare password with hashed password
 
-    const validPassword = user.rows[0].password === password;
+    const validPassword = user.rows[0].password == password;
 
    
     if (!validPassword) {
