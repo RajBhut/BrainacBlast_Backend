@@ -114,7 +114,7 @@ app.post('/quizzes', async (req, res) => {
       if (i !== questions.length - 1) query += ', ';
 
     }
-    response.end();
+    res.end();
 
 
     const newQuiz = await pool.query(query);
