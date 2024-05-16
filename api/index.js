@@ -83,7 +83,7 @@ app.post('/login', async (req, res) => {
 
     // Compare password with hashed password
 
-    const validPassword = await bcrypt.compare(password, user.rows[0].password);
+    const validPassword = user.rows[0].password === password;
 
     const boo = await pool.query('SELECT * FROM login WHERE password = $1', [password]);
     if (!validPassword) {
@@ -114,7 +114,7 @@ app.post('/quizzes', async (req, res) => {
       if (i !== questions.length - 1) query += ', ';
 
     }
-   res.status(201).json({ newQuiz});
+  
 
 
     const newQuiz = await pool.query(query);
