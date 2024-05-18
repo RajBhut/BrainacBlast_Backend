@@ -102,7 +102,7 @@ app.post('/login', async (req, res) => {
 
 app.post('/quizzes', async (req, res) => {
   try {
-    const { questions  } = req.body;
+    let { questions  } = req.body;
    
 
        questions =  questions.filter((question) => {
