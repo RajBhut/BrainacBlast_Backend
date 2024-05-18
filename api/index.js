@@ -105,25 +105,25 @@ app.post('/quizzes', async (req, res) => {
     const { questions  } = req.body;
    
 
-       const newquestions =  questions.filter((question) => {
+       questions =  questions.filter((question) => {
           (!question.question || !question.opt1 || !question.opt2 || !question.opt3 || !question.opt4 || !question.ans || !question.owner_id || !question.generation_code);
         });
       
-      if(newquestions.length == 0) return res.status(400).json({ message: 'Please provide all fields' } );
+      if(questions.length == 0) return res.status(400).json({ message: 'Please provide all fields' } );
 
     
     
 
 
     
-    if (!questions || !questions.length) {
-      return res.status(400).json({ message: 'No questions provided' });
-    }
+    // if (!questions || !questions.length) {
+    //   return res.status(400).json({ message: 'No questions provided' });
+    // }
     let query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans , owner_id , generation_code ) VALUES  ';
     
-    for (let i = 0; i < newquestions.length; i++) {
-      query += `('${newquestions[i].question}', '${newquestions[i].opt1}', '${newquestions[i].opt2}', '${newquestions[i].opt3}', '${newquestions[i].opt4}', '${newquestions[i].ans}' , '${newquestions[i].owner_id}' , '${newquestions[i].generation_code}')`;
-      if (i !== newquestions.length - 1) query += ', ';
+    for (let i = 0; i < questions.length; i++) {
+      query += `('${questions[i].question}', '${questions[i].opt1}', '${questions[i].opt2}', '${questions[i].opt3}', '${questions[i].opt4}', '${questions[i].ans}' , '${questions[i].owner_id}' , '${questions[i].generation_code}')`;
+      if (i !== questions.length - 1) query += ', ';
 
     }
   
