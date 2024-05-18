@@ -91,7 +91,7 @@ app.post('/login', async (req, res) => {
     }
 
     // Login successful (replace with token generation or session handling)
-    res.json({ message: 'Login successful' });
+    res.json({ message: 'Login successful' } );
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: 'Server error' });
@@ -103,6 +103,20 @@ app.post('/login', async (req, res) => {
 app.post('/quizzes', async (req, res) => {
   try {
     const { questions  } = req.body;
+    questions.forEach((question) => {
+    
+      if (!question.question || !question.opt1 || !question.opt2 || !question.opt3 || !question.opt4 || !question.ans || !question.owner_id || !question.generation_code) {
+        questions.filter((question) => {
+          return !question.question || !question.opt1 || !question.opt2 || !question.opt3 || !question.opt4 || !question.ans || !question.owner_id || !question.generation_code;
+        });
+      }
+      if(question.length == 0) return res.status(400).json({ message: 'Please provide all fields' } );
+
+    
+    
+    });
+
+
     
     if (!questions || !questions.length) {
       return res.status(400).json({ message: 'No questions provided' });
