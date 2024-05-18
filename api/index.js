@@ -105,10 +105,9 @@ app.post('/quizzes', async (req, res) => {
     let { questions  } = req.body;
    
 
-       questions =  questions.filter((question) => {
-          (question.question  === '' || question.opt1  == ''|| question.opt2 == '' || question.opt3 == '' || !question.opt4 || question.ans == ''  || question.owner_id == ''  || question.generation_code == '');
-        }); 
-      
+    questions = questions.filter((question) => {
+      return !(question.question  === '' || question.opt1  == ''|| question.opt2 == '' || question.opt3 == '' || !question.opt4 || question.ans == ''  || question.owner_id == ''  || question.generation_code == '');
+    }); 
       if(questions.length == 0) return res.status(400).json({ message: 'Please provide all fields' } );
 
     
