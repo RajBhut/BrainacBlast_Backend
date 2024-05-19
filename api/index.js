@@ -1,4 +1,4 @@
-const apilimiter = require('./ratelimiter');
+
 
 const express = require('express');
 const app = express();
@@ -8,16 +8,10 @@ const bcrypt = require('bcrypt');
 
 const port = 3000;
 
-import rateLimit from "express-rate-limit";
-const apilimiter = rateLimit({  
-windowMs: process.env.RATE,
-max: process.env.MAX
-
-});
 
 app.use(cors({
   origin: "*",
-  
+  credentials: true
 }));
 app.use(express.json());
 
