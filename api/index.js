@@ -1,3 +1,5 @@
+const apilimiter = require('./ratelimiter');
+
 const express = require('express');
 const app = express();
 const pool = require('./db');
@@ -5,6 +7,13 @@ const cors = require('cors');
 const bcrypt = require('bcrypt');
 
 const port = 3000;
+
+import rateLimit from "express-rate-limit";
+const apilimiter = rateLimit({  
+windowMs: process.env.RATE,
+max: process.env.MAX
+
+});
 
 app.use(cors({
   origin: "*",
@@ -81,7 +90,7 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // Compare password with hashed password
+    
 
     const validPassword = await pool.query('SELECT * FROM login WHERE email = $1 AND password = $2', [email, password]);
 
@@ -90,7 +99,6 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // Login successful (replace with token generation or session handling)
     res.json({ message: 'Login successful' } );
   } catch (error) {
     console.error(error.message);
@@ -101,7 +109,7 @@ app.post('/login', async (req, res) => {
 
 
 app.post('/quizzes', async (req, res) => {
-  try {
+  
     let { questions  } = req.body;
    
 
@@ -110,32 +118,57 @@ app.post('/quizzes', async (req, res) => {
     }); 
       if(questions.length == 0) return res.status(400).json({ message: 'Please provide all fields' } );
 
-    
-    
+
+
+
+      let query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans , owner_id , generation_code ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
+      let values = [];
+      
+      for (let i = 0; i < questions.length; i++) {
+        values.push([
+          questions[i].question,
+          questions[i].opt1,
+          questions[i].opt2,
+          questions[i].opt3,
+          questions[i].opt4,
+          questions[i].ans,
+          questions[i].owner_id,
+          questions[i].generation_code
+        ]);
+      }
+      
+      try {
+        const newQuiz = await pool.batch(values.map(value => pool.query(query, value)));
+        res.status(201).json({ newQuiz });
+      } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ message: 'Server error' });
+      }
 
 
     
-    // if (!questions || !questions.length) {
-    //   return res.status(400).json({ message: 'No questions provided' });
-    // }
-    let query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans , owner_id , generation_code ) VALUES  ';
+  //   let query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans , owner_id , generation_code ) VALUES  ';
     
-    for (let i = 0; i < questions.length; i++) {
-      query += `('${questions[i].question}', '${questions[i].opt1}', '${questions[i].opt2}', '${questions[i].opt3}', '${questions[i].opt4}', '${questions[i].ans}' , '${questions[i].owner_id}' , '${questions[i].generation_code}')`;
-      if (i !== questions.length - 1) query += ', ';
+  //   for (let i = 0; i < questions.length; i++) {
+  //     query += `('${questions[i].question}', '${questions[i].opt1}', '${questions[i].opt2}', '${questions[i].opt3}', '${questions[i].opt4}', '${questions[i].ans}' , '${questions[i].owner_id}' , '${questions[i].generation_code}')`;
+  //     if (i !== questions.length - 1) query += ', ';
 
-    }
+  //   }
   
 
 
-    const newQuiz = await pool.query(query);
-    res.status(201).json({ newQuiz});
+  //   const newQuiz = await pool.query(query);
+  //   res.status(201).json({ newQuiz});
    
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+  // } catch (error) {
+  //   console.error(error.message);
+  //   res.status(500).json({ message: 'Server error' });
+  // }
+
+
+
+}
+);
 
 
 
@@ -150,7 +183,7 @@ app.get('/', (req, res) => {
 
 
 
-
+app.use("/quizzes",apilimiter) ;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
