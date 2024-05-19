@@ -1,3 +1,5 @@
+const apilimiter = require('./ratelimiter');
+
 const express = require('express');
 const app = express();
 const pool = require('./db');
@@ -6,9 +8,16 @@ const bcrypt = require('bcrypt');
 
 const port = 3000;
 
+import rateLimit from "express-rate-limit";
+const apilimiter = rateLimit({  
+windowMs: process.env.RATE,
+max: process.env.MAX
+
+});
+
 app.use(cors({
   origin: "*",
-  credentials: true
+  
 }));
 app.use(express.json());
 
@@ -81,7 +90,7 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // Compare password with hashed password
+    
 
     const validPassword = await pool.query('SELECT * FROM login WHERE email = $1 AND password = $2', [email, password]);
 
@@ -90,7 +99,6 @@ app.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
-    // Login successful (replace with token generation or session handling)
     res.json({ message: 'Login successful' } );
   } catch (error) {
     console.error(error.message);
@@ -101,7 +109,7 @@ app.post('/login', async (req, res) => {
 
 
 app.post('/quizzes', async (req, res) => {
-  try {
+  
     let { questions  } = req.body;
    
 
