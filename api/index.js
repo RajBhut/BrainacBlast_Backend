@@ -16,8 +16,8 @@ max: process.env.MAX
 });
 
 app.use(cors({
-  origin: "https://frontend-braniac.vercel.app" || "http://localhost:5173",
-  credentials: true
+  origin: "*",
+  
 }));
 app.use(express.json());
 
