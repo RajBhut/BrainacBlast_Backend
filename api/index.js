@@ -110,26 +110,46 @@ app.post('/quizzes', async (req, res) => {
     }); 
       if(questions.length == 0) return res.status(400).json({ message: 'Please provide all fields' } );
 
-    
-    
+
+    const query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans , owner_id , generation_code ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
+const values = questions.map(question => [
+  question.question,
+  question.opt1,
+  question.opt2,
+  question.opt3,
+  question.opt4,
+  question.ans,
+  question.owner_id,
+  question.generation_code
+]);
+const newQuiz = await pool.batch(values.map(value => pool.query(query, value)));
+res.status(201).json({ newQuiz });
+
+
+
+
+
+
+
+
 
 
     
     // if (!questions || !questions.length) {
     //   return res.status(400).json({ message: 'No questions provided' });
     // }
-    let query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans , owner_id , generation_code ) VALUES  ';
+    // let query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans , owner_id , generation_code ) VALUES  ';
     
-    for (let i = 0; i < questions.length; i++) {
-      query += `('${questions[i].question}', '${questions[i].opt1}', '${questions[i].opt2}', '${questions[i].opt3}', '${questions[i].opt4}', '${questions[i].ans}' , '${questions[i].owner_id}' , '${questions[i].generation_code}')`;
-      if (i !== questions.length - 1) query += ', ';
+    // for (let i = 0; i < questions.length; i++) {
+    //   query += `('${questions[i].question}', '${questions[i].opt1}', '${questions[i].opt2}', '${questions[i].opt3}', '${questions[i].opt4}', '${questions[i].ans}' , '${questions[i].owner_id}' , '${questions[i].generation_code}')`;
+    //   if (i !== questions.length - 1) query += ', ';
 
-    }
+    // }
   
 
 
-    const newQuiz = await pool.query(query);
-    res.status(201).json({ newQuiz});
+    // const newQuiz = await pool.query(query);
+    // res.status(201).json({ newQuiz});
    
   } catch (error) {
     console.error(error.message);
