@@ -130,6 +130,7 @@ const values = questions.map(question => [
   question.owner_id,
   question.generation_code
 ]);
+try{
 const newQuiz = await pool.batch(values.map(value => pool.query(query, value)));
 res.status(201).json({ newQuiz });
 
