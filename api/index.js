@@ -105,7 +105,7 @@ app.get('/quizzes', async (req, res) => {
     const query = 'SELECT MAX(GENERATION_CODE) FROM questions';
     const data = await pool.query(query);
     
-    res.json(data.rows + 1);
+    res.json(data.rows[0].generation_code +1);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: 'Server error' });
@@ -120,7 +120,7 @@ app.post('/quizzes', async (req, res) => {
    
 
     questions = questions.filter((question) => {
-      return !(question.question  === '' || question.opt1  == ''|| question.opt2 == '' || question.opt3 == '' || !question.opt4 || question.ans == ''  || question.owner_id == ''  || question.generation_code == '');
+      return !(question.question  === '' || question.opt1  == ''|| question.opt2 == '' || question.opt3 == '' || !question.opt4 || question.ans == ''  || question.owner_name == ''  || question.generation_code == '');
     }); 
       if(questions.length == 0) return res.status(400).json({ message: 'Please provide all fields' } );
 
