@@ -10,7 +10,7 @@ const port = 3000;
 
 
 app.use(cors({
-  origin: " https://frontend-braniac.vercel.app/*",
+  origin: "*",
   credentials: true
 }));
 app.use(express.json());
