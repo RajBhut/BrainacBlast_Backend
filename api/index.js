@@ -10,7 +10,7 @@ const port = 3000;
 
 
 app.use(cors({
-  origin: "*",
+  origin: "http://localhost:3000 || https://frontend-braniac.vercel.app/*",
   credentials: true
 }));
 app.use(express.json());
@@ -100,7 +100,19 @@ app.post('/login', async (req, res) => {
   }
 });
 
+app.get('/quizzes', async (req, res) => {
+  try {
+    const query = 'SELECT MAX(GENERATION_CODE) FROM questions';
+    const data = await pool.query(query);
+    
+    res.json(data.rows);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: 'Server error' });
+  }
 
+}
+);
 
 app.post('/quizzes', async (req, res) => {
   
@@ -113,7 +125,7 @@ app.post('/quizzes', async (req, res) => {
       if(questions.length == 0) return res.status(400).json({ message: 'Please provide all fields' } );
 
 
-    const query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans , owner_id , generation_code ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
+    const query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans , user_name , generation_code ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
 const values = questions.map(question => [
   question.question,
   question.opt1,
@@ -121,11 +133,11 @@ const values = questions.map(question => [
   question.opt3,
   question.opt4,
   question.ans,
-  question.owner_id,
+  question.user_name,
   question.generation_code
 ]);
 try{
-const newQuiz = await Promise.all(values.map(value => pool.query(query, value)));
+const newQuiz = await pool.batch(values.map(value => pool.query(query, value)));
 res.status(201).json({ newQuiz });
 
 
@@ -137,23 +149,6 @@ res.status(201).json({ newQuiz });
 
 
 
-    
-    // if (!questions || !questions.length) {
-    //   return res.status(400).json({ message: 'No questions provided' });
-    // }
-    // let query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans , owner_id , generation_code ) VALUES  ';
-    
-    // for (let i = 0; i < questions.length; i++) {
-    //   query += `('${questions[i].question}', '${questions[i].opt1}', '${questions[i].opt2}', '${questions[i].opt3}', '${questions[i].opt4}', '${questions[i].ans}' , '${questions[i].owner_id}' , '${questions[i].generation_code}')`;
-    //   if (i !== questions.length - 1) query += ', ';
-
-    // }
-  
-
-
-    // const newQuiz = await pool.query(query);
-    // res.status(201).json({ newQuiz});
-   
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: 'Server error' });
