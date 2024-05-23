@@ -104,7 +104,7 @@ app.get('/quizzes', async (req, res) => {
   try {
     const query = 'SELECT MAX(GENERATION_CODE) FROM questions';
     const data = await pool.query(query);
-    consol.log(data.rows[0]);
+    console.log(data.rows[0]);
     res.json(data.rows[0].generation_code +1);
   } catch (error) {
     console.error(error.message);
