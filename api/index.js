@@ -119,10 +119,10 @@ app.post('/quizzes', async (req, res) => {
     let { questions  } = req.body;
    
 
-  //  questions = questions.filter((question) => {
-   //   return !(question.question  === '' || question.opt1  == ''|| question.opt2 == '' || question.opt3 == '' || !question.opt4 || question.ans == ''    || question.generation_code == '');
-  //  }); 
-   //   if(questions.length == 0) return res.status(400).json({ message: 'Please provide all fields' } );
+    questions = questions.filter((question) => {
+    return !(question.question  === '' || question.opt1  == ''|| question.opt2 == '' || question.opt3 == '' || !question.opt4 || question.ans == ''    || question.generation_code == '');
+    }); 
+      if(questions.length == 0) return res.status(400).json({ message: 'Please provide all fields' } );
 
 
     const query = 'INSERT INTO questions (question , opt1 ,opt2 , opt3 , opt4 , ans , user_name , generation_code ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
