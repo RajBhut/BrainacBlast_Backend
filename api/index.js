@@ -137,7 +137,7 @@ const values = questions.map(question => [
   question.generation_code
 ]);
 try{
-const newQuiz = await pool.batch(values.map(value => pool.query(query, value)));
+const newQuiz = await Promise.all(values.map(value => pool.query(query, value)));
 res.status(201).json({ newQuiz });
 
 
