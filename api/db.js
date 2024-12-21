@@ -1,5 +1,3 @@
-
-
 // const Pool = require('pg').Pool;
 
 // const pool = new Pool({
@@ -10,11 +8,18 @@
 //     database:'Braniac_Blast'
 // });
 
+// const { Pool } = require('pg')
+// require('dotenv').config()
 
-const { Pool } = require('pg')
-require('dotenv').config()
+// const pool = new Pool({
+//     connectionString: process.env.PG_URL,
+// })
+// module.exports = pool;
+const { createClient } = require("@supabase/supabase-js");
 
-const pool = new Pool({
-    connectionString: process.env.PG_URL,
-})
-module.exports = pool;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+module.exports = supabase;
